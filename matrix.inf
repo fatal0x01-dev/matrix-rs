@@ -1,0 +1,65 @@
+;===================================================================
+; Copyright (c)2023, Microsoft Corporation
+;
+;Module Name:
+;    MATRIX.INF
+;===================================================================
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = System
+ClassGuid   = {4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider    = %ProviderString%
+PnpLockDown = 1
+DriverVer = 06/22/2026,13.3.19.970
+CatalogFile = matrix.cat
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+matrix.sys  = 1,,
+
+; ================= Class section =====================
+
+[SystemClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+; ================= Install section =================
+
+[Manufacturer]
+%StdMfg%=Standard,NTamd64.10.0...16299
+
+[Standard.NTamd64.10.0...16299]
+%MATRIX.DeviceDesc%=MATRIX_Device, root\MATRIX
+
+[MATRIX_Device.NTamd64]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+matrix.sys
+
+; ================= Service installation =================
+[MATRIX_Device.NTamd64.Services]
+AddService = MATRIX, %SPSVCINST_ASSOCSERVICE%, MATRIX_Service_Inst
+
+[MATRIX_Service_Inst]
+DisplayName    = %MATRIX.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\matrix.sys
+
+; ================= Strings =================
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+ProviderString         = "matrix"
+StdMfg                 = "(Standard system devices)"
+DiskId1                = "Matrix Hypervisor Installation Disk #1"
+MATRIX.DeviceDesc        = "Matrix Type-2 Hypervisor"
+MATRIX.SVCDESC           = "Matrix Hypervisor Service"
+ClassName              = "System"
